@@ -1,0 +1,111 @@
+<html>
+    <head>
+        <title>Student Information Management System - NHS</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            body{
+                background-color: #f8f9fa;
+                color: #333;
+                min-height: 100vh;
+                display: flex;
+            }
+        </style>
+    </head>
+    <title>Student Information System</title>
+    <body>
+        <div class="main-wrapper">
+
+            <div class="brand-banner">
+                <img src="NHS.png" alt="NHS Logo">
+                <h1>Nagpayong High School</h1>
+                <p id="subBannerText">High School Department Information</p>
+            </div>
+            
+            <div class="card">
+                <h2>Add New Student Record</h2>
+                <div class="form-grid">
+                    <div clas="form-group">
+                        <label for="department">Select Department</label>
+                        <select id="department" onchange="toggleDepartment()">
+                            <option value="highschool">High School Department</option>
+                            <option value="seniorhighschool">Senior High School Department</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>LRN</label>
+                        <input type="number" id="lrn" placeholder="e.g. 1367121431321">
+                    </div>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="fullname" placeholder="e.g. Franco C. Castro">
+                    </div>
+
+                    <div class="form-group" id="strandGroup" style="display: none;">
+                        <label>Strand</label>
+                        <input type="text" id="strand" placeholder="e.g. ABM, STEM, ICT">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Contact</label>
+                        <input type="text" id="contact" placeholder="e.g. 0910123912">
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" id="submitBtn" class="btn-primary" onclick="addStudent()">Add Student</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Search & Filter</h2>
+                <div class="filter-grid">
+                    <div class="form-group" id="seniorFilter" style="display: none;">
+                        <label id="filterStrandLabel">Filter by Strand</label>
+                        <input type="search" id="searchStrand" placeholder="e.g. ABM, ICT">
+                        <button type="button" class="btn-secondary" onclick="filterByStrand()">Apply Strand Filter</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Filter by Year Level</label>
+                        <input type="search" id="searchYear" placeholder="e.g. 1 to 4">
+                        <button type="button" class="btn-secondary" onclick="filterByYear()">Apply Year Filter</button>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn-primary" onclick="displayAll()">Show All Records</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Student Record List</h2>
+                <div id="output" class="output-area">No Records loaded.</div>
+            </div>
+        </div>
+
+        <script>
+            var students = [];
+            function toggleDepartment() {
+                var dept = document.getElementById("department").value;
+                var strandGroup = document.getElementById("strandGroup");
+                var seniorFilter = document.getElementById("seniorFilter");
+
+                if (dept === "seniorhighschool") {
+                    searchYear.placeholder = "e.g. 11 or 12";
+                    strandGroup.style.display = "flex"
+                    seniorFilter.style.display = "flex"
+                } else {
+                    searchYear.placeholder = "e.g. 1 to 4"
+                    strandGroup.style.display = "none"
+                    seniorFilter.style.display = "none"
+                }
+            }
+        </script>
+    </body>
+</html>
