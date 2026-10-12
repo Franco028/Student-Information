@@ -1,5 +1,6 @@
 <html>
-    <head>
+
+<head>
     <title>Student Information Management System - NHS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -321,103 +322,377 @@
 
         .action-cell .btn-delete,
         .action-cell .btn-edit {
-        display: none;
+            display: none;
         }
 
         tr:hover .action-cell .btn-delete,
         tr:hover .action-cell .btn-edit {
-        display: inline-block; 
+            display: inline-block;
         }
-        
     </style>
 </head>
-    <body>
-        <div class="main-wrapper">
 
-            <div class="brand-banner">
-                <img src="NHS.png" alt="NHS Logo">
-                <h1>Nagpayong High School</h1>
-                <p id="subBannerText">High School Department Information</p>
-            </div>
-            
-            <div class="card">
-                <h2>Add New Student Record</h2>
-                <div class="form-grid">
-                    <div clas="form-group">
-                        <label for="department">Select Department</label>
-                        <select id="department" onchange="toggleDepartment()">
-                            <option value="highschool">High School Department</option>
-                            <option value="seniorhighschool">Senior High School Department</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>LRN</label>
-                        <input type="number" id="lrn" placeholder="e.g. 1367121431321">
-                    </div>
-                    <div class="form-group">
-                        <label>Full Name</label>
-                        <input type="text" id="fullname" placeholder="e.g. Franco C. Castro">
-                    </div>
-
-                    <div class="form-group" id="strandGroup" style="display: none;">
-                        <label>Strand</label>
-                        <input type="text" id="strand" placeholder="e.g. ABM, STEM, ICT">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Contact</label>
-                        <input type="text" id="contact" placeholder="e.g. 0910123912">
-                    </div>
+<body>
+    <div class="brand-banner">
+        <div id="sashWrapper" class="dept-sash-wrapper">
+            <div id="deptSash" class="dept-sash">HIGH SCHOOL DEPARTMENT</div>
+        </div>
+        <img src="NHS.png">
+        <h1>Nagpayong High School</h1>
+        <p id="subBannerText">High School Department Student Information</p>
+    </div>
+    <div class="main-wrapper">
+        <div class="card">
+            <h2 id="formTitle">Add New Student Record</h2>
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label for="department">Select Department</label>
+                    <select id="department" onchange="toggleDepartment()">
+                        <option value="highschool">High School Department</option>
+                        <option value="seniorhighschool">Senior High School Department</option>
+                    </select>
                 </div>
 
-                <div class="button-group">
-                    <button type="button" id="submitBtn" class="btn-primary" onclick="addStudent()">Add Student</button>
+                <div class="form-group">
+                    <label>LRN</label>
+                    <input type="number" id="lrn" placeholder="e.g. 136712143132">
                 </div>
-            </div>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="fullname" placeholder="e.g. Franco C. Castro">
+                </div>
 
-            <div class="card">
-                <h2>Search & Filter</h2>
-                <div class="filter-grid">
-                    <div class="form-group" id="seniorFilter" style="display: none;">
-                        <label id="filterStrandLabel">Filter by Strand</label>
-                        <input type="search" id="searchStrand" placeholder="e.g. ABM, ICT">
-                        <button type="button" class="btn-secondary" onclick="filterByStrand()">Apply Strand Filter</button>
-                    </div>
-                    <div class="form-group">
-                        <label>Filter by Year Level</label>
-                        <input type="search" id="searchYear" placeholder="e.g. 1 to 4">
-                        <button type="button" class="btn-secondary" onclick="filterByYear()">Apply Year Filter</button>
-                    </div>
-                    <div class="form-group">
-                        <button type="button" class="btn-primary" onclick="displayAll()">Show All Records</button>
-                    </div>
+                <div class="form-group">
+                    <label>Contact</label>
+                    <input type="text" id="contact" placeholder="e.g. 09189202894">
+                </div>
+
+                <div class="form-group">
+                    <label>Year Level</label>
+                    <input type="number" id="yearLevel" placeholder="e.g. 7, 8, 9, 10">
+                </div>
+
+                <div class="form-group full-width" id="strandGroup" style="display: none;">
+                    <label>Strand</label>
+                    <select id="strand" class="placeholder-select" onchange="updateStrandColor()">
+                        <option value="" disabled selected hidden>Select Strand</option>
+                        <option value="HUMSS">HUMSS</option>
+                        <option value="GAS">GAS</option>
+                        <option value="ICT">ICT</option>
+                        <option value="STEM">STEM</option>
+                    </select>
                 </div>
             </div>
 
-            <div class="card">
-                <h2>Student Record List</h2>
-                <div id="output" class="output-area">No Records loaded.</div>
+            <div class="button-group">
+                <button type="button" id="submitBtn" class="btn-primary" onclick="addStudent()">Add Student</button>
+                <button type="button" id="cancelBtn" class="btn-cancel" style="display: none;"
+                    onclick="cancelEdit()">Cancel Edit</button>
             </div>
         </div>
 
-        <script>
-            var students = [];
-            function toggleDepartment() {
-                var dept = document.getElementById("department").value;
-                var strandGroup = document.getElementById("strandGroup");
-                var seniorFilter = document.getElementById("seniorFilter");
+        <div class="card">
+            <h2>Search & Filter</h2>
+            <div class="filter-grid">
+                <div class="form-group" id="seniorFilter" style="display: none;">
+                    <label id="filterStrandLabel">Filter by Strand</label>
+                    <input type="search" id="searchStrand" placeholder="e.g. ABM, ICT">
+                    <button type="button" class="btn-secondary" style="margin-top: 8px;"
+                        onclick="filterByStrand()">Apply Strand Filter</button>
+                </div>
+                <div class="form-group">
+                    <label>Filter by Year Level</label>
+                    <input type="search" id="searchYear" placeholder="e.g. 7, 8, 9, 10">
+                    <button type="button" class="btn-secondary" style="margin-top: 8px;" onclick="filterByYear()">Apply
+                        Year Filter</button>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn-primary" onclick="displayAll()">Show All Records</button>
+                </div>
+            </div>
 
-                if (dept === "seniorhighschool") {
-                    searchYear.placeholder = "e.g. 11 or 12";
-                    strandGroup.style.display = "flex"
-                    seniorFilter.style.display = "flex"
-                } else {
-                    searchYear.placeholder = "e.g. 1 to 4"
-                    strandGroup.style.display = "none"
-                    seniorFilter.style.display = "none"
+        </div>
+
+        <div class="card" id="hsTableCard">
+            <h2>High School Student Record</h2>
+            <div id="highSchoolOutput" class="output-area"></div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>LRN</th>
+                            <th>Full Name</th>
+                            <th>Contact</th>
+                            <th>Year Level</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="highSchoolTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card" id="shsTableCard" style="display: none;">
+            <h2>Senior High School Student Record</h2>
+            <div id="seniorHighOutput" class="output-area"></div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>LRN</th>
+                            <th>Full Name</th>
+                            <th>Contact</th>
+                            <th>Grade Level</th>
+                            <th>Strand</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="seniorHighTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var editIndex = -1;
+
+        var shsSaves = localStorage.getItem("shsDeptData");
+        var hsSaves = localStorage.getItem("hsDeptData");
+
+        var hsStudents = JSON.parse(localStorage.getItem("hsDeptData")) || [];
+        var shsStudents = JSON.parse(localStorage.getItem("shsDeptData")) || [];
+
+        function updateStrandColor() {
+            var strandSelect = document.getElementById("strand")
+            if (strandSelect.value === "") {
+                strandSelect.classList.add("placeholder-select");
+            } else {
+                strandSelect.classList.remove("placeholder-select");
+            }
+        }
+
+        function addStudent() {
+            var dept = document.getElementById("department").value;
+            var lrn = document.getElementById("lrn").value;
+            var fullname = document.getElementById("fullname").value;
+            var contact = document.getElementById("contact").value;
+            var yearLevel = Number(document.getElementById("yearLevel").value);
+            var strand = document.getElementById("strand").value;
+
+            if (!lrn || !fullname || !contact || !yearLevel) {
+                alert("Please fill in all required fields.");
+                return;
+            }
+
+            if (lrn.length !== 12) {
+                alert("The LRN must be exactly 12 characters long!")
+                return;
+            }
+
+            if (dept === "highschool") {
+                if (yearLevel < 7 || yearLevel > 10) {
+                    alert("High School year levels must be between 7 and 10.");
+                    return;
                 }
             }
-        </script>
-    </body>
+
+            else if (dept === "seniorhighschool") {
+                if (yearLevel < 11 || yearLevel > 12) {
+                    alert("Senior High School grade levels must be 11 or 12.");
+                    return;
+                }
+                if (!strand) {
+                    alert("Please select a strand for Senior High School.");
+                    return;
+                }
+            }
+
+            if (editIndex === -1) {
+                if (dept === "highschool") {
+                    hsStudents.push({ lrn, fullname, contact, yearLevel });
+                    localStorage.setItem("hsDeptData", JSON.stringify(hsStudents));
+                    document.getElementById("highSchoolOutput").innerHTML = "Student added successfully.";
+                } else {
+                    shsStudents.push({ lrn, fullname, contact, yearLevel, strand });
+                    localStorage.setItem("shsDeptData", JSON.stringify(shsStudents));
+                    document.getElementById("seniorHighOutput").innerHTML = "Senior High student added successfully.";
+                }
+            } else {
+                if (confirm("Are you sure you want to update this student record?")) {
+                    if (dept === "highschool") {
+                        hsStudents[editIndex] = { lrn, fullname, contact, yearLevel };
+                        localStorage.setItem("hsDeptData", JSON.stringify(hsStudents));
+                    } else {
+                        shsStudents[editIndex] = { lrn, fullname, contact, yearLevel, strand };
+                        localStorage.setItem("shsDeptData", JSON.stringify(shsStudents));
+                    }
+                }
+            }
+            alert("Student record updated successfully.");
+            cancelEdit();
+            displayStudents();
+        }
+
+        function clearForm() {
+            document.getElementById("lrn").value = "";
+            document.getElementById("fullname").value = "";
+            document.getElementById("contact").value = "";
+            document.getElementById("yearLevel").value = "";
+            document.getElementById("strand").value = "";
+            updateStrandColor();
+
+            editIndex = -1;
+            var submitBtn = document.getElementById("submitBtn");
+            submitBtn.textContent = "Add Student";
+        }
+
+        function displayStudents() {
+            var hsTable = "";
+            for (var i = 0; i < hsStudents.length; i++) {
+                hsTable += "<tr>";
+                hsTable += "<td>" + hsStudents[i].lrn + "</td>";
+                hsTable += "<td>" + hsStudents[i].fullname + "</td>"
+                hsTable += "<td>" + hsStudents[i].contact + "</td>";
+                hsTable += "<td>" + hsStudents[i].yearLevel + "</td>";
+                hsTable += "<td class='action-cell'>"
+                hsTable += "<button class='btn-edit' onclick='editHSStudent(" + i + ")' style='margin-right: 8px;'>Edit</button>";
+                hsTable += "<button class='btn-delete' onclick='deleteHSStudent(" + i + ")'>Delete</button>"
+                hsTable += "</td>";
+                hsTable += "</tr>"
+            }
+            document.getElementById("highSchoolTableBody").innerHTML = hsTable;
+
+            var shsTable = "";
+            for (var j = 0; j < shsStudents.length; j++) {
+                shsTable += "<tr>";
+                shsTable += "<td>" + shsStudents[j].lrn + "</td>";
+                shsTable += "<td>" + shsStudents[j].fullname + "</td>";
+                shsTable += "<td>" + shsStudents[j].contact + "</td>";
+                shsTable += "<td>" + shsStudents[j].yearLevel + "</td>";
+                shsTable += "<td>" + shsStudents[j].strand + "</td>";
+                shsTable += "<td class='action-cell'>";
+                shsTable += "<button class='btn-edit' onclick='editSHSStudent(" + j + ")' style='margin-right: 8px;'>Edit</button>";
+                shsTable += "<button class='btn-delete' onclick='deleteSHSStudent(" + j + ")'>Delete</button>";
+                shsTable += "</td>";
+                shsTable += "</tr>";
+            }
+            document.getElementById("seniorHighTableBody").innerHTML = shsTable;
+        }
+
+        function editHSStudent(index) {
+
+            editIndex = index;
+
+            document.getElementById("lrn").value = hsStudents[index].lrn;
+            document.getElementById("fullname").value = hsStudents[index].fullname;
+            document.getElementById("contact").value = hsStudents[index].contact;
+            Number(document.getElementById("yearLevel").value = hsStudents[index].yearLevel);
+
+            document.getElementById("formTitle").innerHTML = "Edit Student";
+            document.getElementById("highSchoolOutput").innerHTML = "Updating Student...";
+            document.getElementById("cancelBtn").style.display = "inline-block";
+            document.getElementById("submitBtn").innerText = "Update Student";
+        }
+
+        function editSHSStudent(index) {
+            editIndex = index;
+            document.getElementById("lrn").value = shsStudents[index].lrn;
+            document.getElementById("fullname").value = shsStudents[index].fullname;
+            document.getElementById("contact").value = shsStudents[index].contact;
+            Number(document.getElementById("yearLevel").value = shsStudents[index].yearLevel);
+            document.getElementById("strand").value = shsStudents[index].strand;
+
+            document.getElementById("formTitle").innerHTML = "Edit Student";
+            document.getElementById("seniorHighOutput").innerHTML = "Updating Student...";
+            document.getElementById("cancelBtn").style.display = "inline-block";
+            document.getElementById("submitBtn").innerText = "Update Student";
+        }
+
+        function cancelEdit() {
+            editIndex = -1;
+            clearForm();
+            document.getElementById("formTitle").innerHTML = "Add New Student Record";
+            document.getElementById("seniorHighOutput").innerHTML = "";
+            document.getElementById("highSchoolOutput").innerHTML = "";
+            document.getElementById("cancelBtn").style.display = "none";
+            document.getElementById("submitBtn").innerText = "Add Student";
+        }
+
+        function deleteHSStudent(index) {
+            if (confirm("Are you sure you want to delete this Record?")) {
+                hsStudents.splice(index, 1);
+                localStorage.setItem("hsDeptData", JSON.stringify(hsStudents));
+                displayStudents()
+            }
+        }
+
+        function deleteSHSStudent(index) {
+            if (confirm("Are you sure you want to delete this Record?")) {
+                shsStudents.splice(index, 1);
+                localStorage.setItem("shsDeptData", JSON.stringify(shsStudents));
+                displayStudents()
+            }
+        }
+
+        function displayAll() {
+            displayStudents();
+        }
+
+        function toggleDepartment() {
+            var dept = document.getElementById("department").value;
+            var strandGroup = document.getElementById("strandGroup");
+            var searchYear = document.getElementById("searchYear");
+            var yearLevel = document.getElementById("yearLevel");
+            var seniorFilter = document.getElementById("seniorFilter");
+            var hsTableCard = document.getElementById("hsTableCard");
+            var shsTableCard = document.getElementById("shsTableCard");
+
+            var sashWrapper = document.getElementById("sashWrapper");
+            var deptSash = document.getElementById("deptSash")
+
+            sashWrapper.classList.add("slide-out-right")
+
+            setTimeout(function () {
+                if (dept === "seniorhighschool") {
+                    searchYear.placeholder = "e.g. 11, 12";
+                    strandGroup.style.display = "flex";
+                    seniorFilter.style.display = "flex";
+                    subBannerText.textContent = "Senior High School Department Student Information";
+                    document.getElementById("yearLevel").placeholder = "e.g. 11, 12";
+
+                    deptSash.textContent = "Senior High School Department";
+                    sashWrapper.classList.add("senior");
+
+                    clearForm();
+
+                    document.getElementById("hsTableCard").style.display = "none";
+                    document.getElementById("shsTableCard").style.display = "block";
+
+                } else {
+                    searchYear.placeholder = "e.g. 7 to 10";
+                    strandGroup.style.display = "none";
+                    seniorFilter.style.display = "none";
+                    subBannerText.textContent = "High School Department Student Information";
+                    document.getElementById("yearLevel").placeholder = "e.g. 7, 8, 9, 10";
+
+                    deptSash.textContent = "High School Department";
+                    sashWrapper.classList.remove("senior");
+
+                    clearForm();
+
+                    document.getElementById("hsTableCard").style.display = "block";
+                    document.getElementById("shsTableCard").style.display = "none";
+                }
+
+                sashWrapper.classList.remove("slide-out-right");
+                sashWrapper.classList.add("prep-left");
+
+                setTimeout(function () {
+                    sashWrapper.classList.remove("prep-left")
+                }, 50)
+            }, 350);
+        }
+    </script>
+</body>
+
 </html>
