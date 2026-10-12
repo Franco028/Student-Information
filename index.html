@@ -1,22 +1,335 @@
 <html>
     <head>
         <title>Student Information Management System - NHS</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            * {
-                box-sizing: border-box;
-                margin: 0;
-                padding: 0;
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-            body{
-                background-color: #f8f9fa;
-                color: #333;
-                min-height: 100vh;
-                display: flex;
-            }
-        </style>
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        .dept-sash {
+            position: relative;
+            background: #ff4757;
+            color: #ffffff;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding: 10px 25px;
+            z-index: 2;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+            transition: background-color 0.4s ease;
+        }
+
+        .dept-sash-wrapper {
+            position: relative;
+            margin-bottom: 25px;
+            display: inline-block;
+
+            /* Smooth transition for sliding motion */
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease;
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .dept-sash-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: -25px;
+            width: 30px;
+            height: 100%;
+            background: #e03241;
+            z-index: 1;
+            clip-path: polygon(100% 0, 0 0, 40% 50%, 0 100%, 100% 100%);
+            transition: background-color 0.4s ease;
+        }
+
+        .dept-sash-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            right: -20px;
+            width: 30px;
+            height: 100%;
+            background: #e03241;
+            z-index: 1;
+            clip-path: polygon(0 0, 100% 0, 60% 50%, 100% 100%, 0 100%);
+            transition: background-color 0.4s ease;
+        }
+
+        .dept-sash-wrapper.senior .dept-sash {
+            background-color: #00a8ff;
+        }
+
+        .dept-sash-wrapper.senior::before,
+        .dept-sash-wrapper.senior::after {
+            background-color: #0082c8;
+        }
+
+        .dept-sash-wrapper.slide-out-right {
+            transform: translateX(120%);
+            opacity: 0;
+        }
+
+        .dept-sash-wrapper.prep-left {
+            transition: none !important;
+            transform: translateX(-120%);
+            opacity: 0;
+        }
+
+        .brand-banner {
+            width: 35%;
+            background: linear-gradient(180deg, #006CFF 10%, #0a1a4e 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            padding: 40px 20px;
+            text-align: center;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-banner img {
+            width: 70%;
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 25px;
+            filter: drop-shadow(0px 4px 10px rgb(0, 0, 0));
+        }
+
+        .brand-banner h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            filter: drop-shadow(0px 4px 10px rgba(0, 0, 0, 0.3));
+        }
+
+        .brand-banner p {
+            font-size: 0.95rem;
+            color: #ffffff;
+            font-weight: 300;
+        }
+
+        .main-wrapper {
+            width: 65%;
+            padding: 40px;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 25px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            margin-bottom: 12px;
+            border-left: 5px solid #006CFF;
+        }
+
+        h2 {
+            color: #006CFF;
+            font-size: 1.3rem;
+            margin-bottom: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="search"],
+        select {
+            width: 100%;
+            padding: 10px 14px;
+            background-color: #f1f3f5;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .input::placeholder {
+            color: #757575;
+            opacity: 1;
+        }
+
+        select.placeholder-select {
+            color: #757575;
+        }
+
+        select option {
+            color: #333;
+        }
+
+        select option [value=""][disbled] {
+            color: #757575;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="search"]:focus,
+        select:focus {
+            outline: none;
+            background-color: #ffffff;
+            border-color: #006CFF;
+            box-shadow: 0 0 0 3px rgba(13, 9, 255, 0.103);
+        }
+
+        .button-group {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            border-radius: 6px;
+            transition: background 0.2s ease, transform 0, 1s ease;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background-color: #0a1a4e;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background-color: #05123b;
+        }
+
+        .btn-secondary {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+
+        .btn-secondary:hover {
+            background-color: #dee2e6;
+        }
+
+        .btn-edit {
+            background-color: #f39c12;
+            color: #fff;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        .btn-edit:hover {
+            background-color: #d68910;
+        }
+
+        .btn-delete {
+            background-color: #e74c3c;
+            color: #fff;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        .btn-delete:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-cancel {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+        }
+
+        .output-area {
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: #495057;
+            font-weight: 700;
+            text-align: left;
+            padding: 12px;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .action-cell .btn-delete,
+        .action-cell .btn-edit {
+        display: none;
+        }
+
+        tr:hover .action-cell .btn-delete,
+        tr:hover .action-cell .btn-edit {
+        display: inline-block; 
+        }
+        
+    </style>
     </head>
     <title>Student Information System</title>
     <body>
